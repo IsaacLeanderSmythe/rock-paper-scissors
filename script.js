@@ -1,61 +1,58 @@
 function getComputerChoice(){
-    const computerHand = Math.random();
+    const computerHand = Math.floor(Math.random()*3);
 
-    if(computerHand<(1/3)){
-        return 'Rock'
+    if(computerHand===0){
+        return 'rock';
     }
-    else if (computerHand>(2/3)){
-        return 'Scissors'
+    else if (computerHand===1){
+        return 'scissors';
     }
     else{
-        return 'Paper'
+        return 'paper';
     }
 }
-//return 'You win! '+ firstLetterCap(playerSelection) + ' beats ' + computerSelection;
-function playRound(playerSelection, computerSelection){
-    if(playerSelection.toUpperCase()===computerSelection.toUpperCase()){
+
+function playRound(e){
+    const playerSelection = e.target.getAttribute("data-key");
+    const computerSelection = getComputerChoice();
+    document.getElementById('player-hand').textContent = playerSelection;
+    document.getElementById('computer-hand').textContent = computerSelection;
+    
+    if(playerSelection === computerSelection){
+        console.log('tie');
         return 'tie';
     }
-    if( (playerSelection.toUpperCase()==='ROCK' && computerSelection.toUpperCase()==='SCISSORS') ||
-    (playerSelection.toUpperCase()==='PAPER' && computerSelection.toUpperCase()==='ROCK') ||
-    (playerSelection.toUpperCase()==='SCISSORS' && computerSelection.toUpperCase()==='PAPER') ){
-        return 'won';
+    if( (playerSelection ==='rock' && computerSelection === 'scissors')
+    || (playerSelection ==='paper' && computerSelection==='rock') 
+    || (playerSelection ==='scissors' && computerSelection==='paper') ){
+        playerScore++;
+        document.getElementById('player-score').textContent = playerScore;
     }
     else{
-        return 'lost';
+        computerScore++;
+        document.getElementById('computer-score').textContent = computerScore;
+    }
+
+    if(playerScore===5){
+        playerScore = 0;
+        computerScore = 0;
+        alert('You won!');
+        document.getElementById('player-score').textContent = 0;
+        document.getElementById('computer-score').textContent = 0;
+    }
+    else if(computerScore===5){
+        playerScore = 0;
+        computerScore = 0;
+        alert('You lost');
+        document.getElementById('player-score').textContent = 0;
+        document.getElementById('computer-score').textContent = 0;
     }
 }
 
-function firstLetterCap(word){
-    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-}
+const cards = document.querySelectorAll(".card");
 
-function game(){
-    let score = 0;
-    let round = 0;
-    while(round<5){
-        const computerSelection = getComputerChoice();
-        const humanSelection = prompt('What is your choice?');
-        const result = playRound(humanSelection,computerSelection);
-        if(result !== 'tie'){
-            if(result==='won'){
-                console.log('You won! '+ firstLetterCap(humanSelection) + ' beats ' +computerSelection);
-                score++;
-            }
-            else if(result==='lost'){
-                console.log('You lost! '+ computerSelection + ' beats ' +firstLetterCap(humanSelection))
-            }
-            round++;
-        }
-        else{
-            console.log('Its a tie! Play again!');
-        }
-    }
-    if(score>2){
-        console.log('You have won the game with a score of '+score);
-    }
-    else{
-        console.log('You have lost. Your score is '+score)
-    }
-    
-}
+cards.forEach(card => {
+    card.addEventListener('click',playRound)
+})
+let playerScore = 0;
+let computerScore = 0;
